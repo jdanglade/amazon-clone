@@ -4,9 +4,7 @@ const cors = require("cors");
 const {
   UserDimensions,
 } = require("firebase-functions/lib/providers/analytics");
-const stripe = require("stripe")(
-  "pk_test_51J76r4DXPalGk4XGRqs63IvfOy8IsJq3ntNITNYWo5F25dqfQdcWWTWv7dstvCIQtNaznLJjyvkm9i2xw8ujKwac00yAmENSTL"
-);
+const stripe = require("stripe")();
 
 // API
 
@@ -16,9 +14,6 @@ const app = express();
 // Middleware
 app.use(cors({ origin: true }));
 app.use(express.json());
-app.use((req, res) => {
-  res.header("Access-Control-Allow-Origin", "*");
-});
 
 // API Routes
 app.get("/", (request, response) => {
