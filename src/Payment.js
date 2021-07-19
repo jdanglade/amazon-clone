@@ -7,6 +7,7 @@ import CheckoutProduct from "./CheckoutProduct";
 import { useStateValue } from "./StateProvider";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { getBasketTotal } from "./reducer";
+import { db } from "./firebase";
 
 function Payment() {
   const history = useHistory();
@@ -24,11 +25,18 @@ function Payment() {
 
   useEffect(() => {
     const getClientSecret = async () => {
-      const response = await axios({
-        method: "post",
-        url: `/payments/create?total=${getBasketTotal(basket) * 100}`,
-      });
-      setClientSecret(response.data.clientSecret);
+      if (basket.length > 0) {
+        try {
+          const basketTotalCents = Math.round(getBasketTotal(basket) * 100);
+          const response = await axios({
+            method: "post",
+            url: `/payments/create?total=${basketTotalCents}`,
+          });
+          setClientSecret(response.data.clientSecret);
+        } catch (e) {
+          console.error(error);
+        }
+      }
     };
 
     getClientSecret();
@@ -47,10 +55,20 @@ function Payment() {
         },
       })
       .then(({ paymentIntent }) => {
+        db.collection("users")
+          .doc(user?.uid)
+          .collection("orders")
+          .doc(paymentIntent.id)
+          .set({
+            basket: basket,
+            amount: paymentIntent.amount,
+            created: paymentIntent.created,
+          });
         setSucceeded(true);
         setError(null);
         setProcessing(false);
-        history.replace("./orders");
+        dispatch({ type: "EMPTY_BASKET" });
+        history.replace("/orders");
       });
   };
 

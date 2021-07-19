@@ -1,10 +1,10 @@
 const functions = require("firebase-functions");
 const express = require("express");
 const cors = require("cors");
-const {
-  UserDimensions,
-} = require("firebase-functions/lib/providers/analytics");
-const stripe = require("stripe")();
+
+const stripe = require("stripe")(
+  "sk_test_51J76r4DXPalGk4XGGB0tY7VhkAoRpMVeAJT6ZuucLmm6QJXZNgJBLIGyYLHelJDsh3GpVbxKv4dqcv1nlvqMsFjf005uXfktSw"
+);
 
 // API
 
