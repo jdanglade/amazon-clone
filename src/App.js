@@ -59,7 +59,6 @@ function App() {
               <Payment />
             </Elements>
           </Route>
-          {/* <Route></Route> */}
           <Route path="/">
             <Header></Header>
             <Home></Home>
